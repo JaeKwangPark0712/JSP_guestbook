@@ -12,6 +12,14 @@
 	
 	GetMessageListService messageListService = GetMessageListService.getInstance();
 	MessageListView viewData = messageListService.getMessageList(pageNumber);
+	
+	int totalPage = viewData.getPageTotalCount();
+	int pagePerList = 5;
+	int firstPage = ((pageNumber - 1) / pagePerList) * pagePerList + 1;
+	int lastPage = firstPage + pagePerList - 1;
+	if(lastPage > totalPage) {
+		lastPage = totalPage;
+	}
 %>
 <c:set var="viewData" value="<%= viewData %>" />
 
@@ -47,13 +55,25 @@
 				</tr>
 				</c:forEach>
 			</table>
-
-			<c:forEach var="pageNum" begin="1" end="${viewData.pageTotalCount }">
-				<a href="list.jsp?page=${pageNum }">
-					[${pageNum }]
-				</a>
-			</c:forEach>
-			
+			<%
+				if(firstPage > pagePerList) {
+			%>		
+					<a href="list.jsp?page=<%= firstPage -  pagePerList%>">[이전]</a>	
+			<%		
+				}
+				for(int i = firstPage; i <= lastPage; i++) {
+			%>		
+					<a href="list.jsp?page=<%= i%>">
+						[<%= i %>]
+					</a>	
+			<%	
+				}
+				if(lastPage < totalPage) {
+			%>		
+					<a href="list.jsp?page=<%= firstPage +  pagePerList%>">[다음]</a>	
+			<%		
+				}
+			%>
 		</c:if>
 	</body>
 </html>
